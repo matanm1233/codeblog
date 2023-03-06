@@ -4,6 +4,8 @@ from . import db
 
 main = Blueprint('main', __name__)
 
+# all our routes which don't require authentication
+
 @main.route('/')
 def index():
     print(current_user.is_authenticated)
@@ -12,6 +14,5 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    
     print(current_user)
     return render_template("profile.html", name=current_user.name)

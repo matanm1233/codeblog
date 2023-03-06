@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from jinja2 import Environment, PackageLoader, select_autoescape
 
+# this is the app factory
+
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -13,13 +15,17 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
+    # initialize database
     db.init_app(app)
+    
+    # initialize flask-login
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
 
     from .models import User
 
+    # initialize login features
     @login_manager.user_loader
     def load_user(user_id):
         # since the user_id is just the primary key of our user table, use it in the query for the user

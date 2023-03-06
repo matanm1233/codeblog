@@ -46,7 +46,8 @@ def signup_post():
         flash('Please enter all fields')
         return redirect(url_for('auth.signup'))
 
-    if user: # if a user is found, we want to redirect back to signup page so user can try again
+     # if a user is found, we want to redirect back to signup page so user can try again
+    if user:
         flash('Email address already exists')
         return redirect(url_for('auth.signup'))
 
