@@ -48,7 +48,8 @@ def signup_post():
 
      # if a user is found, we want to redirect back to signup page so user can try again
     if user:
-        flash('Email address already exists')
+        flash('''Email address already exists. Go to <a href = "/login">login page</a>.''')
+
         return redirect(url_for('auth.signup'))
 
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
@@ -68,3 +69,4 @@ def signup_post():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
+

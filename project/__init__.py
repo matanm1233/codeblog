@@ -1,7 +1,10 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import flask_login
 from flask_login import LoginManager, current_user
 from jinja2 import Environment, PackageLoader, select_autoescape
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 # this is the app factory
 
@@ -11,6 +14,18 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
+
+    
+    # this adds the view which can edit the User table
+    from .models import User, MyAdminIndexView
+
+    # init admin page
+    app.config['FLASK_ADMIN_SWITCH'] = 'cerulean'
+    admin = Admin(app, name='Blog Admin', index_view=MyAdminIndexView())
+
+
+    admin.add_view(ModelView(User, db.session))
+
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -40,3 +55,4 @@ def create_app():
     app.register_blueprint(main_blueprint)
 
     return app
+
