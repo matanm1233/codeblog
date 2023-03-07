@@ -1,10 +1,11 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import flask_login
 from flask_login import LoginManager, current_user
 from jinja2 import Environment, PackageLoader, select_autoescape
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from flask_session import Session
 
 # this is the app factory
 
@@ -14,18 +15,22 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-
+    app.jinja_env.globals.update(is_admin=is_admin)
     
+    # init session
+    app.config["SESSION_PERMANENT"] = False
+    app.config["SESSION_TYPE"] = "filesystem"
+
+    Session(app)    
+
     # this adds the view which can edit the User table
-    from .models import User, MyAdminIndexView
+    from .models import User, MyAdminIndexView, AdminModelView
 
     # init admin page
     app.config['FLASK_ADMIN_SWITCH'] = 'cerulean'
     admin = Admin(app, name='Blog Admin', index_view=MyAdminIndexView())
 
-
-    admin.add_view(ModelView(User, db.session))
-
+    admin.add_view(AdminModelView(User, db.session))
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -56,3 +61,11 @@ def create_app():
 
     return app
 
+def is_admin():
+    from .models import User
+    user = User.query.filter_by(id = current_user.get_id()).first()
+    
+    if not user:
+            return False
+    
+    return user.admin

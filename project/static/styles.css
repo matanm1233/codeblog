@@ -42,9 +42,13 @@ article {
 }
 
 .to-right {
-  margin-left: 25%;
-  margin-right: 7%;
+  position: absolute;
+  margin-right: auto;
+  right: 10px;
+  top: auto;
+  top: 15px
 }
+
 
 .nav-item {
   font-size: 15pt;

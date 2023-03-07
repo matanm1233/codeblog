@@ -1,4 +1,7 @@
 __pycache__/
 deldb.py 
+createdb.py
+giveadmin.py
 instance/
 testing/
+flask_session
