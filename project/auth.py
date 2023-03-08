@@ -35,7 +35,7 @@ def signup():
 def signup_post():
     # code to validate and add user to database goes here
     email = request.form.get('email').lower()
-    name = request.form.get('name').lower()
+    name = request.form.get('name')
     password = request.form.get('password')
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database

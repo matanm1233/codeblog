@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from . import db, create_app
 from flask import session
-from .models import Post, User
+from .models import Post, User, Comment, PostLike
+import datetime
 
 main = Blueprint('main', __name__)
 
@@ -30,12 +31,25 @@ def addpost():
         return redirect(url_for('main.index'))
     
     # otherwise add to the db
-    import datetime
 
     now = datetime.datetime.now()
 
     post = Post(title=title, post_content=textcontent, user_id=current_user.get_id(), created_at=now)
     db.session.add(post)
     db.session.commit()
+    return redirect(url_for('main.index'))
+
+@main.route('/addcomment/<post_title>', methods=['POST'])
+@login_required
+def addcomment(post_title):
+    # get form content and find post
+    comment_textcontent = request.form.get('comment')
+    postid = Post.query.filter_by(title=post_title).first().id
+    
+    # create new comment object and add it to the database
+    comment = Comment(post_content=comment_textcontent, post_id=postid, user_id=current_user.id, created_at=datetime.datetime.now())
+    db.session.add(comment)
+    db.session.commit()
+
     return redirect(url_for('main.index'))
 

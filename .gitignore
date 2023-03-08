@@ -5,3 +5,4 @@ giveadmin.py
 instance/
 testing/
 flask_session
+posts

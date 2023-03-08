@@ -31,6 +31,8 @@ class Post(db.Model):
      user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
      comments = db.relationship('Comment', backref='post')
      likes = db.relationship('PostLike', backref='post')
+     column_display_pk = True # optional, but I like to see the IDs in the list
+     column_hide_backrefs = False
 
 
 class Comment(db.Model):
@@ -42,6 +44,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+
 class PostLike(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     created_at = db.Column(db.DateTime)
@@ -51,7 +54,8 @@ class PostLike(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class AdminModelView(ModelView):
-        pass
+        column_hide_backrefs = True
+        column_display_pk = True # optional, but I like to see the IDs in the list
 
 # create a custom adminindexview class, the accessible method defines who is allowed to view the page
 class MyAdminIndexView(flask_admin.AdminIndexView):

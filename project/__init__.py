@@ -22,6 +22,19 @@ def create_app():
     def format_datetime(value):
         month = value.strftime("%m")
         return f"{calendar.month_abbr[int(month)]} {value.strftime('%d')}, {value.strftime('%Y')}"
+    
+    
+    # filter for formatting titles to html class data
+    @app.template_filter()
+    def no_spaces(string):
+        return string.replace(' ', "-")
+    
+
+    # filter for converting a userid into the corresponding username
+    @app.template_filter()
+    def username_from_id(id):
+        return User.query.filter_by(id=id).first().name
+    
 
     # init session object
     app.config["SESSION_PERMANENT"] = False

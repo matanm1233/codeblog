@@ -2,6 +2,8 @@ body{
   background-image: url(images/background.jpg);
   background-blend-mode: multiply;
   background-color: rgba(0,0,0,.5);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 h1, h3, label {
@@ -14,10 +16,12 @@ h1, h3, label {
 }
 
 article {
-  background-color:#8a2be2;   
-  border:2px solid transparent;
-  border-color: black;
+  background-color: rgba(148, 143, 255, 0.8);   
+  border:5px solid transparent;
+  border-color: rgba(0,0,0,.5);
   padding: 1rem;
+  text-align: left !important;
+  border-radius: 10px;
 }
 
 .fab, .fa {
@@ -84,4 +88,16 @@ ul > li > a:hover {
 .tox-editor-container {
   border-radius: 10px;
   width:50%;
+}
+
+.post-title {
+  text-align: center;
+}
+
+.comment {
+  padding: 1rem;
+  border-radius: 5px;
+  border: 3px solid transparent;
+  border-color: rgba(0,0,0,.5);
+  background-color: blueviolet
 }
