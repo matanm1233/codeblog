@@ -43,7 +43,7 @@
             <a href="/login" class="nav-link active"> Login</a>
           </li>
           {% endif %}
-          {% if is_admin() %}
+          {% if current_user.is_admin() %}
           <li class="nav-item mr-3">
             <a href="/admin" class="nav-link active">Admin </a>
           </li>

@@ -15,7 +15,6 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.jinja_env.globals.update(is_admin=is_admin)
     
     # init session
     app.config["SESSION_PERMANENT"] = False
@@ -24,8 +23,8 @@ def create_app():
     Session(app)    
 
     # this adds the view which can edit the User table
-    from .models import User, MyAdminIndexView, AdminModelView
-
+    from .models import User, MyAdminIndexView, AdminModelView, AnonymousUser
+    
     # init admin page
     app.config['FLASK_ADMIN_SWITCH'] = 'cerulean'
     admin = Admin(app, name='Blog Admin', index_view=MyAdminIndexView())
@@ -42,6 +41,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    login_manager.anonymous_user = AnonymousUser
 
     from .models import User
 
@@ -61,11 +61,3 @@ def create_app():
 
     return app
 
-def is_admin():
-    from .models import User
-    user = User.query.filter_by(id = current_user.get_id()).first()
-    
-    if not user:
-            return False
-    
-    return user.admin

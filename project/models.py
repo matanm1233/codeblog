@@ -22,14 +22,14 @@ class AdminModelView(ModelView):
 # create a custom adminindexview class, the accessible method defines who is allowed to view the page
 class MyAdminIndexView(flask_admin.AdminIndexView):
     def is_accessible(self):
-        user = User.query.filter_by(id = current_user.get_id()).first()
-        
-        if not user:
-             return False
-        
-        return user.admin
+        return current_user.is_admin()
     
     # if the user doesn't have access
     def inaccessible_callback(self, name, **kwargs):
         flash('Forbidden: Not an Admin')
         return redirect(url_for('main.index'))
+
+class AnonymousUser(AnonymousUserMixin):
+     def is_admin(self):
+          return False
+     
