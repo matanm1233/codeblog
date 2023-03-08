@@ -6,7 +6,8 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_session import Session
-
+import babel
+import calendar
 # this is the app factory
 
 
@@ -16,6 +17,12 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     
+    # jinja filter for formatting sql datetime
+    @app.template_filter()
+    def format_datetime(value):
+        month = value.strftime("%m")
+        return f"{calendar.month_abbr[int(month)]} {value.strftime('%d')}, {value.strftime('%Y')}"
+
     # init session object
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"

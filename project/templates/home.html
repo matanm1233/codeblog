@@ -1,5 +1,26 @@
 {% extends "layout.html" %}
 
+{% block head %} 
+<script src="https://cdn.tiny.cloud/1/2kk2n5fh7418iw24v2hoick9me1kgrq365kchr2lvcu250s6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+      selector: 'textarea',
+      skin: 'oxide-dark',
+      content_css: "dark",
+      width: '60%',
+      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ]
+    });
+  </script>
+
+{% endblock %} 
+
 {% block main %} 
 {% with messages = get_flashed_messages() %} 
 {% if messages %} 
@@ -10,20 +31,40 @@
 {% endwith %}
 
 <div class="mt-5 container text-white text-center">
-    <div class="row">
-        <div class="mb-3 col-lg">
+    <div class="mb-3 row">
+        <div class=" col-lg">
             <h1>Dev Blog</h1>
         </div>
     </div>
-    <div class="row">
+
+    {% if current_user.is_admin() %} 
+    <p>
+        <a class="btn btn-dark" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Make post
+        </a>
+      </p>
+      <div class="collapse" id="collapseExample">
+        <form method="POST" action="/addpost">
+            <label for="title" class="mb-1">Title:</label>
+            <input style="width:60%" id="title" name="title" type="text" class="mx-auto form form-control mb-2">
+            <textarea class="mx-auto" name="postcontent" id="mytextarea">
+                <p>This is some sample content</p>
+            </textarea>
+            <button class="my-3 btn btn-dark" type="submit">Post</button>
+        </form>
+      </div>
+      
+    {% endif %}
+    
+    {% for post in posts %}
+    <div class="mb-3 row">
         <div class="col-sm">
-            <article> HI </article>
+            <article> 
+                <h3>{{ post.title }}</h3>
+                <h6>Posted on {{ post.created_at | format_datetime }}</h6>
+                {{ post.post_content | safe }} </article>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm">
-            <article>HI</article>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %} 

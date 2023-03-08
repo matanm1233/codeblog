@@ -30,9 +30,7 @@ class Post(db.Model):
     # relationships
      user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
      comments = db.relationship('Comment', backref='post')
-     likes = db.relationship('PostLike  ', backref='post')
-
-
+     likes = db.relationship('PostLike', backref='post')
 
 
 class Comment(db.Model):
@@ -44,8 +42,6 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-
-     
 class PostLike(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     created_at = db.Column(db.DateTime)
@@ -53,7 +49,6 @@ class PostLike(db.Model):
     # relationships
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
 
 class AdminModelView(ModelView):
         pass
