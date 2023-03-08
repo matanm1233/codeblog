@@ -7,7 +7,7 @@
       selector: 'textarea',
       skin: 'oxide-dark',
       content_css: "dark",
-      width: '60%',
+      width: '100%',
       plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
       toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
       tinycomments_mode: 'embedded',
@@ -18,7 +18,23 @@
       ]
     });
   </script>
+<script>
+     tinymce.init({
+      selector: 'textarea#comment',
+      skin: 'oxide-dark',
+      content_css: "dark",
+      width: '100%',
+      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ]
+    });
 
+</script>
 {% endblock %} 
 
 {% block main %} 
@@ -37,12 +53,13 @@
         </div>
     </div>
 
+    <!-- the interface to make a new post -->
     {% if current_user.is_admin() %} 
     <p>
         <a class="btn btn-dark" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
             Make post
         </a>
-      </p>
+    </p>
       <div class="collapse" id="collapseExample">
         <form method="POST" action="/addpost">
             <label for="title" class="mb-1">Title:</label>
@@ -56,13 +73,41 @@
       
     {% endif %}
     
+    <!-- Each of these is for a single post-->
     {% for post in posts %}
+    <!-- Create a new row -->
     <div class="mb-3 row">
         <div class="col-sm">
             <article> 
-                <h3>{{ post.title }}</h3>
+                <h3 class="post-title">{{ post.title }}</h3>
                 <h6>Posted on {{ post.created_at | format_datetime }}</h6>
-                {{ post.post_content | safe }} </article>
+                {{ post.post_content | safe }} 
+                {% for comment in post.comments %} 
+                <div class="comment">
+                    <h6>{{ comment.user_id | username_from_id }} | {{ comment.created_at | format_datetime }}</h6>
+                    <div>
+                        {{ comment.post_content | safe }}
+                    </div>
+                </div>
+                </article>
+                {% endfor %}
+                    <div class="mt-3">
+                        <p>
+                            <a class="btn btn-secondary" data-bs-toggle="collapse" href="#comment{{ post.title | no_spaces }}" role="button" aria-expanded="false" aria-controls="comment">
+                                Add comment:
+                            </a>
+                        </p>
+                          
+                    </div>    
+                </article>
+                <div class="text-center collapse" id="comment{{ post.title | no_spaces}}">
+                    <form action="/addcomment/{{ post.title }}" method="POST">
+                        <div>
+                            <textarea class="comment" id="comment" name="comment"></textarea>
+                        </div>
+                        <button type="submit" class="mt-2 btn btn-secondary">Post</button>
+                    </form>
+                  </div>
         </div>
     </div>
     {% endfor %}
