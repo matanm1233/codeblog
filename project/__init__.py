@@ -16,34 +16,36 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     
-    # init session
+    # init session object
     app.config["SESSION_PERMANENT"] = False
     app.config["SESSION_TYPE"] = "filesystem"
-
     Session(app)    
 
-    # this adds the view which can edit the User table
-    from .models import User, MyAdminIndexView, AdminModelView, AnonymousUser
+
+    from .models import User, MyAdminIndexView, AdminModelView, AnonymousUser, Post, PostLike, Comment
     
     # init admin page
     app.config['FLASK_ADMIN_SWITCH'] = 'cerulean'
     admin = Admin(app, name='Blog Admin', index_view=MyAdminIndexView())
 
-    admin.add_view(AdminModelView(User, db.session))
+    # this adds the view which can edit the User table
+    tables = [User, Post, PostLike, Comment]
+    for table in tables:
+        admin.add_view(AdminModelView(table, db.session))
 
+    # config dummy secret key
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
     # initialize database
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     db.init_app(app)
-    
+
     # initialize flask-login
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    # custom class for users who are not logged in
     login_manager.anonymous_user = AnonymousUser
-
-    from .models import User
 
     # initialize login features
     @login_manager.user_loader

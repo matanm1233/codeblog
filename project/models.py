@@ -3,6 +3,8 @@ from . import db, create_app
 from flask_admin.contrib.sqla import ModelView
 from flask import redirect, url_for, flash
 import flask_admin
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped
 
 # creates a user object which represents the user table in the sqlite database
 class User(UserMixin, db.Model):
@@ -12,8 +14,45 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(1000))
     admin = db.Column(db.Boolean)
 
+    # relationships
+    posts = db.relationship('Post', backref='user')
+    comments = db.relationship('Comment', backref='user')
+
     def is_admin(self):
          return self.admin
+
+class Post(db.Model):
+     id = db.Column(db.Integer, primary_key = True)
+     title = db.Column(db.String(100), unique=True, nullable=False)
+     post_content = db.Column(db.Text)
+     created_at = db.Column(db.DateTime)
+    
+    # relationships
+     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+     comments = db.relationship('Comment', backref='post')
+     likes = db.relationship('PostLike  ', backref='post')
+
+
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    post_content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime)
+
+    # relationships
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+     
+class PostLike(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    created_at = db.Column(db.DateTime)
+
+    # relationships
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 class AdminModelView(ModelView):
