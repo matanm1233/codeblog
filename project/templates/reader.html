@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %} 
 
 {% block head %} 
 <script src="https://cdn.tiny.cloud/1/2kk2n5fh7418iw24v2hoick9me1kgrq365kchr2lvcu250s6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -17,65 +17,9 @@
         { value: 'Email', title: 'Email' },
       ]
     });
-  </script>
-<script>
-     tinymce.init({
-      selector: 'textarea#comment',
-      skin: 'oxide-dark',
-      content_css: "dark",
-      width: '100%',
-      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-      tinycomments_mode: 'embedded',
-      tinycomments_author: 'Author name',
-      mergetags_list: [
-        { value: 'First.Name', title: 'First Name' },
-        { value: 'Email', title: 'Email' },
-      ]
-    });
-
-</script>
-{% endblock %} 
-
+  </script> 
+{% endblock %}
 {% block main %} 
-{% with messages = get_flashed_messages() %} 
-{% if messages %} 
-    <div class="alert alert-warning">
-        {{ messages[0] }}
-    </div>
-    {% endif %} 
-{% endwith %}
-
-<div class="mt-5 container text-white text-center">
-    <div class="mb-3 row">
-        <div class=" col-lg">
-            <h1>Dev Blog</h1>
-        </div>
-    </div>
-
-    <!-- the interface to make a new post -->
-    {% if current_user.is_admin() %} 
-    <p>
-        <a class="btn btn-dark" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-            Make post
-        </a>
-    </p>
-      <div class="collapse" id="collapseExample">
-        <form method="POST" action="/addpost">
-            <label for="title" class="mb-1">Title:</label>
-            <input style="width:60%" id="title" name="title" type="text" class="mx-auto form form-control mb-2">
-            <textarea class="mx-auto" name="postcontent" id="mytextarea">
-                <p>This is some sample content</p>
-            </textarea>
-            <button class="my-3 btn btn-dark" type="submit">Post</button>
-        </form>
-      </div>
-      
-    {% endif %}
-    
-    <!-- Each of these is for a single post-->
-    {% for post in posts %}
-    <!-- Create a new row -->
     <div class="mb-3 row">
         <div class="col-sm">
             <article> 
@@ -84,8 +28,16 @@
                 {{ post.post_content | safe }} 
               
                 
+                {% if post.comments %} 
+                <hr>
+                {% endif %}
+                <!-- comment button -->
+                <div class="container d-flex align-items-center mx-0 mt-3 mb-2">
+                <!-- Back button -->
+                <a class="m-2" href="/">
+                    <button class="btn btn-secondary">Back</button>
+                </a>
                 <!-- Reader mode button -->
-                <div class="container d-flex align-items-center justify-content-end mt-3 mb-2">
                     <!-- like button -->
                     <!-- if user has liked -->
                     {% if hasuserliked(post) %}
@@ -101,30 +53,27 @@
                     {% if post.likes %}
                         <p style="margin-top:16px !important" class="mx-1 mt-auto">{{ post.likes | count }}</p>
                     {% endif %}
-                    <a class="mx-2" href="/{{ post.title | no_spaces }}">
-                        <button class="btn btn-secondary mr-auto">Read more...</button>
-                    </a>
+                    
                 </div>
-                {% if post.comments %} 
-                <hr>
-                {% endif %}
-                <!-- comment button -->
-                <div class="mt-3">
+                <div class="mt-3 mb-3"   >
                     <p>
                         <a class="btn text-white btn-secondary" data-bs-toggle="collapse" href="#comment{{ post.title | no_spaces }}" role="button" aria-expanded="false" aria-controls="comment">
                             Add comment:
                         </a>
                     </p>
+                
+
                 </div>    
-                <div class="text-center collapse" id="comment{{ post.title | no_spaces}}">
+                <div class="text-center mb-5 collapse" id="comment{{ post.title | no_spaces}}">
                     <form action="/addcomment/{{ post.title }}" method="POST">
                         <div>
                             <textarea class="comment" id="comment" name="comment"></textarea>
                         </div>
                         <button type="submit" class="mt-2 btn btn-secondary">Post</button>
                     </form>
+                    <hr>
                   </div>
-                {% for comment in post.comments | sort(attribute='created_at', reverse=True) %} 
+                {% for comment in post.comments | sort(attribute = 'created_at', reverse=True) %} 
                 <div class="comment mb-3">
                     <h6>{{ comment.user_id | username_from_id }} | {{ comment.created_at | format_datetime }}</h6>
                     <div>
@@ -134,10 +83,4 @@
                 {% endfor %}
                 </article>
                 
-                
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %} 
-
+{% endblock %}

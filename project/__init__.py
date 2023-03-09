@@ -17,24 +17,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     
-    # jinja filter for formatting sql datetime
-    @app.template_filter()
-    def format_datetime(value):
-        month = value.strftime("%m")
-        return f"{calendar.month_abbr[int(month)]} {value.strftime('%d')}, {value.strftime('%Y')}"
-    
-    
-    # filter for formatting titles to html class data
-    @app.template_filter()
-    def no_spaces(string):
-        return string.replace(' ', "-")
-    
-
-    # filter for converting a userid into the corresponding username
-    @app.template_filter()
-    def username_from_id(id):
-        return User.query.filter_by(id=id).first().name
-    
+    app.jinja_env.globals.update(hasuserliked=hasuserliked)
 
     # init session object
     app.config["SESSION_PERMANENT"] = False
@@ -81,5 +64,30 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    # jinja filter for formatting sql datetime
+    @app.template_filter()
+    def format_datetime(value):
+        month = value.strftime("%m")
+        return f"{calendar.month_abbr[int(month)]} {value.strftime('%d')}, {value.strftime('%Y')}"
+
+
+    # filter for formatting titles to html class data
+    @app.template_filter()
+    def no_spaces(string):
+        return string.replace(' ', "-")
+
+
+    # filter for converting a userid into the corresponding username
+    @app.template_filter()
+    def username_from_id(id):
+        return User.query.filter_by(id=id).first().name
+
     return app
+
+def hasuserliked(post):   
+    for like in post.likes:
+        print(like)
+        if int(like.user_id) == int(current_user.get_id()):
+            return True
+    return False
 

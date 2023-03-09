@@ -99,5 +99,29 @@ ul > li > a:hover {
   border-radius: 5px;
   border: 3px solid transparent;
   border-color: rgba(0,0,0,.5);
-  background-color: blueviolet
+  background-color: rgba(138, 43, 226, 0.4)
+}
+
+.post-content {
+    padding: 1rem;
+    border-radius: 5px;
+    border: 3px solid transparent;
+    border-color: rgba(0,0,0, .6);
+}
+
+.post-content > p, .comment > p {
+  margin-bottom: 0;
+}
+
+hr {
+  border-top: 2px dashed black;
+}
+
+a, a:link, a:visited, a:focus, a:hover, a:active{
+  color:rgba(0,0,0, .6);
+  text-decoration:none;
+}
+
+.red {
+    color:red;
 }
