@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from . import db, create_app
-from flask import session
+from flask import session, Response
 from .models import Post, User, Comment, PostLike
 import datetime
+from jinja2 import Template
 
 main = Blueprint('main', __name__)
 
@@ -25,18 +26,22 @@ def addpost():
     textcontent = request.form.get('postcontent')
     title = request.form.get('title')
 
+
     # make sure content is not empty
     if not textcontent or not title:
         flash("Must enter all fields!")
         return redirect(url_for('main.index'))
     
     # otherwise add to the db
-
     now = datetime.datetime.now()
 
     post = Post(title=title, post_content=textcontent, user_id=current_user.get_id(), created_at=now)
     db.session.add(post)
     db.session.commit()
+
+    # create a new html file containing the content of the post
+    createhtml(title, textcontent)
+
     return redirect(url_for('main.index'))
 
 @main.route('/addcomment/<post_title>', methods=['POST'])
@@ -47,9 +52,55 @@ def addcomment(post_title):
     postid = Post.query.filter_by(title=post_title).first().id
     
     # create new comment object and add it to the database
-    comment = Comment(post_content=comment_textcontent, post_id=postid, user_id=current_user.id, created_at=datetime.datetime.now())
+    comment = Comment(post_content=comment_textcontent, post_id=postid, user_id=current_user.get_id(), created_at=datetime.datetime.now())
     db.session.add(comment)
     db.session.commit()
+    originrequest = request.headers['Referer']
+    return redirect(originrequest)
 
-    return redirect(url_for('main.index'))
+@main.route('/<post_title>')
+def read_post(post_title):
+    # jank way of aligning url title with database title
+    post_title = post_title.replace('-', ' ')
 
+    article = Post.query.filter_by(title=post_title).first()
+    return render_template('reader.html', post=article)
+
+@main.route('/like/<post_title>')
+@login_required
+def like_post(post_title):
+    post_title = post_title.replace('-', ' ')
+    postid = Post.query.filter_by(title=post_title).first().id
+    PostLikes = len(Post.query.filter_by(id=postid).first().likes)
+
+    likes = Post.query.filter_by(title=post_title).first().likes
+    for like in likes:
+        if int(like.user_id) == int(current_user.get_id()):
+            return unlike(like, postid)
+
+    # check if the user has liked post before
+    # create new like object based on user
+    like = PostLike(created_at=datetime.datetime.now(), user_id=current_user.get_id(), post_id=postid)
+
+    # commit to db
+    db.session.add(like)
+    db.session.commit()
+
+    originrequest = request.headers['Referer']
+    return redirect(originrequest)
+
+def createhtml(title, content):
+    filetitle = title.replace(" ", "_").lower()
+    html = open(f'project/static/posts/{filetitle}.html', 'w')
+    html.write(content)
+    html.close
+
+def unlike(like, postid):
+    db.session.delete(like)
+    db.session.commit()
+    
+    originrequest = request.headers['Referer']
+    return redirect(originrequest)
+
+
+    
