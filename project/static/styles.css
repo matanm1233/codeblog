@@ -41,6 +41,10 @@ article {
 .fa-github {
   color: whitesmoke;
 }
+
+.fa-heart {
+  color:gray;
+}
 .nounderline {
   text-decoration: none;
 }
@@ -118,10 +122,12 @@ hr {
 }
 
 a, a:link, a:visited, a:focus, a:hover, a:active{
-  color:rgba(0,0,0, .6);
   text-decoration:none;
 }
 
+a.button {
+  color:rgba(0,0,0, .6); 
+}
 .red {
     color:red;
 }

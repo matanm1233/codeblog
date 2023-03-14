@@ -39,9 +39,6 @@ def addpost():
     db.session.add(post)
     db.session.commit()
 
-    # create a new html file containing the content of the post
-    createhtml(title, textcontent)
-
     return redirect(url_for('main.index'))
 
 @main.route('/addcomment/<post_title>', methods=['POST'])
@@ -55,8 +52,7 @@ def addcomment(post_title):
     comment = Comment(post_content=comment_textcontent, post_id=postid, user_id=current_user.get_id(), created_at=datetime.datetime.now())
     db.session.add(comment)
     db.session.commit()
-    originrequest = request.headers['Referer']
-    return redirect(originrequest)
+    return redirect(originurl(request))
 
 @main.route('/<post_title>')
 def read_post(post_title):
@@ -86,21 +82,51 @@ def like_post(post_title):
     db.session.add(like)
     db.session.commit()
 
-    originrequest = request.headers['Referer']
-    return redirect(originrequest)
+    return redirect(originurl(request))
 
-def createhtml(title, content):
-    filetitle = title.replace(" ", "_").lower()
-    html = open(f'project/static/posts/{filetitle}.html', 'w')
-    html.write(content)
-    html.close
+@main.route('/delcomment/<comment_id>')
+@login_required
+def remove_comment(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+
+    if not comment:
+        return redirect(url_for('main.index'))
+
+    if not current_user.owns_comment(comment):
+        return redirect(url_for('main.index'))
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    flash('Comment removed!')
+    return redirect(originurl(request))
+
+
+@main.route('/delpost/<post_title>')
+@login_required
+def remove_post(post_title):
+    post_title = post_title.replace('-', ' ')
+    post = Post.query.filter_by(title=post_title).first()
+    
+    if not post:
+        return redirect(url_for('main.index'))
+
+    if not current_user.owns_post(post):
+        return redirect(url_for('main.index'))
+    
+    db.session.delete(post)
+    db.session.commit()
+
+    flash('Post removed!')
+    return redirect(originurl(request))
+
 
 def unlike(like, postid):
     db.session.delete(like)
     db.session.commit()
     
-    originrequest = request.headers['Referer']
-    return redirect(originrequest)
+    return redirect(originurl(request))
 
 
-    
+def originurl(request):
+    return request.headers['Referer']

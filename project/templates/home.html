@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-
+{% from "macros.html" import article with context %}
 {% block head %} 
 <script src="https://cdn.tiny.cloud/1/2kk2n5fh7418iw24v2hoick9me1kgrq365kchr2lvcu250s6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
@@ -46,7 +46,7 @@
     {% endif %} 
 {% endwith %}
 
-<div class="mt-5 container text-white text-center">
+<div class="container text-white text-center">
     <div class="mb-3 row">
         <div class=" col-lg">
             <h1>Dev Blog</h1>
@@ -56,7 +56,7 @@
     <!-- the interface to make a new post -->
     {% if current_user.is_admin() %} 
     <p>
-        <a class="btn btn-dark" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <a class="btn btn-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
             Make post
         </a>
     </p>
@@ -67,7 +67,7 @@
             <textarea class="mx-auto" name="postcontent" id="mytextarea">
                 <p>This is some sample content</p>
             </textarea>
-            <button class="my-3 btn btn-dark" type="submit">Post</button>
+            <button class="my-3 btn btn-secondary" type="submit">Post</button>
         </form>
       </div>
       
@@ -78,63 +78,7 @@
     <!-- Create a new row -->
     <div class="mb-3 row">
         <div class="col-sm">
-            <article> 
-                <h3 class="post-title">{{ post.title }}</h3>
-                <h6>Posted on {{ post.created_at | format_datetime }}</h6>
-                {{ post.post_content | safe }} 
-              
-                
-                <!-- Reader mode button -->
-                <div class="container d-flex align-items-center justify-content-end mt-3 mb-2">
-                    <!-- like button -->
-                    <!-- if user has liked -->
-                    {% if hasuserliked(post) %}
-                    <a href="/like/{{ post.title | no_spaces }}">
-                        <i class="red fa-lg mx-1 fa-solid fa-heart"></i>
-                    </a>
-                    {% else %}
-                    <!-- if user has not liked-->
-                    <a href="/like/{{ post.title | no_spaces }}">
-                        <i class="fa-lg mx-1 fa-solid fa-heart"></i>
-                    </a>
-                    {% endif %}
-                    {% if post.likes %}
-                        <p style="margin-top:16px !important" class="mx-1 mt-auto">{{ post.likes | count }}</p>
-                    {% endif %}
-                    <a class="mx-2" href="/{{ post.title | no_spaces }}">
-                        <button class="btn btn-secondary mr-auto">Read more...</button>
-                    </a>
-                </div>
-                {% if post.comments %} 
-                <hr>
-                {% endif %}
-                <!-- comment button -->
-                <div class="mt-3">
-                    <p>
-                        <a class="btn text-white btn-secondary" data-bs-toggle="collapse" href="#comment{{ post.title | no_spaces }}" role="button" aria-expanded="false" aria-controls="comment">
-                            Add comment:
-                        </a>
-                    </p>
-                </div>    
-                <div class="text-center collapse" id="comment{{ post.title | no_spaces}}">
-                    <form action="/addcomment/{{ post.title }}" method="POST">
-                        <div>
-                            <textarea class="comment" id="comment" name="comment"></textarea>
-                        </div>
-                        <button type="submit" class="mt-2 btn btn-secondary">Post</button>
-                    </form>
-                  </div>
-                {% for comment in post.comments | sort(attribute='created_at', reverse=True) %} 
-                <div class="comment mb-3">
-                    <h6>{{ comment.user_id | username_from_id }} | {{ comment.created_at | format_datetime }}</h6>
-                    <div>
-                        {{ comment.post_content | safe }}
-                    </div>
-                </div>
-                {% endfor %}
-                </article>
-                
-                
+            {{ article(post, mode="home") }}
         </div>
     </div>
     {% endfor %}

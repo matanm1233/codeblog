@@ -20,7 +20,14 @@ class User(UserMixin, db.Model):
 
     def is_admin(self):
          return self.admin
+    
+    def owns_post(self, post):
+         return post.user_id == self.id
 
+    def owns_comment(self, comment):
+         return comment.user_id == self.id
+    
+    
 class Post(db.Model):
      id = db.Column(db.Integer, primary_key = True)
      title = db.Column(db.String(100), unique=True, nullable=False)
@@ -33,6 +40,7 @@ class Post(db.Model):
      likes = db.relationship('PostLike', backref='post')
      column_display_pk = True # optional, but I like to see the IDs in the list
      column_hide_backrefs = False
+
 
 
 class Comment(db.Model):
@@ -71,3 +79,11 @@ class AnonymousUser(AnonymousUserMixin):
      def is_admin(self):
           return False
      
+     def get_id(self):
+          return None
+     
+     def owns_post(self, post):
+          return False
+
+     def owns_comment(self, comment):
+          return False

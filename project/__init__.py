@@ -85,6 +85,9 @@ def create_app():
     return app
 
 def hasuserliked(post):   
+    if not current_user.get_id():
+        return False
+    
     for like in post.likes:
         print(like)
         if int(like.user_id) == int(current_user.get_id()):
