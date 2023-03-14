@@ -10,6 +10,7 @@ body{
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position:bottom;
+  background-size:cover;
 }
 
 h1, h3, label {
@@ -179,7 +180,7 @@ a.button {
 
 .splash-text {
   font-family: standout;
-  font-size: 65pt;
+  font-size: 12vmin;
 }
 
 .highlight-text {
