@@ -1,7 +1,7 @@
 body{
   background-image: url(images/background.jpg);
   background-blend-mode: multiply;
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0,0,0,.3);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -24,6 +24,8 @@ article {
   border-radius: 10px;
 }
 
+
+
 .fab, .fa {
     padding: 10px;
     font-size: 30px;
@@ -36,18 +38,45 @@ article {
   
 .fa-instagram {
   color: #E1306C;
+  transition: .5s;
+}
+
+.fa-instagram:hover {
+  color: rgba(225, 48, 108, .8);
+}
+
+.fa-twitter {
+  color: #1DA1F2;
+  transition: .5s;
+}
+
+.fa-twitter:hover {
+  color: rgba(29, 161, 242, .8);
 }
 
 .fa-github {
   color: whitesmoke;
+  transition: .5s;
+}
+
+.fa-github:hover {
+  color: rgba(245, 245, 245, .8);
 }
 
 .fa-heart {
-  color:gray;
+  color: rgba(148, 143, 255, 0.8);
+  transition: .75s;
+}
+
+
+.fa-heart:hover {
+  color: rgba(255, 0, 0, .5);
 }
 .nounderline {
   text-decoration: none;
 }
+
+
 
 .to-right {
   position: absolute;
@@ -61,6 +90,10 @@ article {
 .nav-item {
   font-size: 15pt;
   font-weight:600;
+}
+
+.nav-link {
+  transition: all .75s;
 }
 
 .mr-3 {
@@ -129,5 +162,15 @@ a.button {
   color:rgba(0,0,0, .6); 
 }
 .red {
-    color:red;
+  -webkit-text-stroke-width: 0px !important;  
+    color: rgba(255, 0, 0, 0.7);
+}
+
+.btn-outline-dark {
+  background-color: rgb(111, 32, 239, 0.3);
+  color: white;
+}
+
+.main-content {
+  min-height: 100vh; 
 }

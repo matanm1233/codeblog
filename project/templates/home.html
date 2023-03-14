@@ -37,6 +37,42 @@
 </script>
 {% endblock %} 
 
+{% block splash %}
+<!-- Hero -->
+<div class="p-0 text-center bg-image rounded-3" style="
+    height: 400px;">
+  <div class="mask w-100 h-100" style="background-color: rgba(0, 0, 0, 0.4);">
+    <div class="d-flex justify-content-center align-items-center h-100">
+      <div class="text-white">
+        <h1 class="mb-3">Developer Blog</h1>
+        <h4 class="mb-3">Matan Morse</h4>
+        <a class="btn btn-outline-light btn-lg" href="#">Visit my site</a>
+        {% if current_user.is_admin() %} 
+        <a class="btn btn-outline-light btn-lg" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" role="button">Add a post</a>
+        </div>
+
+      {% endif %}
+  
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container text-center">
+<div class="collapse" id="collapseExample">
+    <form method="POST" action="/addpost">
+        <label for="title" class="mb-1">Title:</label>
+        <input style="width:60%" id="title" name="title" type="text" class="mx-auto form form-control mb-2">
+        <textarea class="mx-auto" name="postcontent" id="mytextarea">
+            <p>This is some sample content</p>
+        </textarea>
+        <button class="my-3 btn btn-outline-light" type="submit">Post</button>
+    </form>
+</div>
+</div>
+<!-- Hero -->
+{% endblock %} 
+
+
 {% block main %} 
 {% with messages = get_flashed_messages() %} 
 {% if messages %} 
@@ -47,31 +83,12 @@
 {% endwith %}
 
 <div class="container text-white text-center">
-    <div class="mb-3 row">
+    <div class="mb-3 row h-100" style="background-color: white;">
         <div class=" col-lg">
-            <h1>Dev Blog</h1>
         </div>
     </div>
 
     <!-- the interface to make a new post -->
-    {% if current_user.is_admin() %} 
-    <p>
-        <a class="btn btn-secondary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-            Make post
-        </a>
-    </p>
-      <div class="collapse" id="collapseExample">
-        <form method="POST" action="/addpost">
-            <label for="title" class="mb-1">Title:</label>
-            <input style="width:60%" id="title" name="title" type="text" class="mx-auto form form-control mb-2">
-            <textarea class="mx-auto" name="postcontent" id="mytextarea">
-                <p>This is some sample content</p>
-            </textarea>
-            <button class="my-3 btn btn-secondary" type="submit">Post</button>
-        </form>
-      </div>
-      
-    {% endif %}
     
     <!-- Each of these is for a single post-->
     {% for post in posts %}
