@@ -54,7 +54,7 @@ def addcomment(post_title):
     db.session.commit()
     return redirect(originurl(request))
 
-@main.route('/<post_title>')
+@main.route('/reader/<post_title>')
 def read_post(post_title):
     # jank way of aligning url title with database title
     post_title = post_title.replace('-', ' ')

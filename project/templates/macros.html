@@ -1,3 +1,49 @@
+{% macro comments(post) %}
+
+<div class="mt-2 comment mb-3 text-left text-white">
+    <h4 style="text-align:left;">Comments: </h4>
+    {% for comment in post.comments | sort(attribute='created_at', reverse=True) %} 
+    <hr>
+        <div class="post-top w-100 d-inline-flex align-items-center">
+
+            <p class="mb-0">Posted by&nbsp<p class="m-0 p-0 highlight-text">{{ comment.user_id | username_from_id }}</p>&nbspon&nbsp<p class="p-0 m-0 highlight-text">{{ comment.created_at | format_datetime }}</p></p>
+            {% if current_user.owns_comment(comment) %}
+                <!-- remove button -->
+                <a class="button" style="margin-left:auto;" >
+                    <i style="cursor:pointer" data-toggle="modal" data-target="#modal{{ comment.id }}" class="fa-solid fa-xmark"></i>
+                </a>
+            {% endif %}    
+        </div>
+    <div class="text-left">
+            {{ comment.post_content | safe }}
+    </div>
+
+<!-- comment Modal -->
+<div class="modal fade" id="modal{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-black">
+                <h5 class="modal-title" id="exampleModalLabel">Delete comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-black">
+                <p> Are you sure you want to delete this comment? </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a href="/delcomment/{{ comment.id }}">
+                    <button type="button" class="btn btn-primary">Yes</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endmacro %} 
+
 {% macro article(post, mode) %} 
 <article class="text-white"> 
     <div class="post-top w-100 d-inline-flex align-items-center">
@@ -20,17 +66,17 @@
         <!-- if user has liked -->
         
         <p class="mb-0" style="margin-right:auto">
-            <a class="btn btn-sm text-white btn-outline-dark" data-bs-toggle="collapse" href="#comment{{ post.title | no_spaces }}" role="button" aria-expanded="false" aria-controls="comment">
+            <a class="btn btn-sm btn-outline-light" data-bs-toggle="collapse" href="#comment{{ post.title | no_spaces }}" role="button" aria-expanded="false" aria-controls="comment">
                 Add comment:
             </a>
         </p>
         {% if mode == "reader" %}
         <a class="mx-2" href="/">
-            <button class="btn btn-sm btn-outline-dark mr-auto">Back</button>
+            <button class="btn btn-sm btn-outline-light mr-auto">Home</button>
         </a>
         {% elif mode == "home" %} 
-        <a class="mx-2" href="/{{ post.title | no_spaces }}">
-            <button class="btn btn-sm btn-outline-dark mr-auto">Read more...</button>
+        <a class="mx-2" href="/reader/{{ post.title | no_spaces }}">
+            <button class="btn btn-sm btn-outline-light mr-auto">Comments --></button>
         </a>
         {% endif %}
 
@@ -55,55 +101,16 @@
             <div>
                 <textarea class="comment" id="comment" name="comment"></textarea>
             </div>
-            <button type="submit" class="mt-2 btn btn-outline-dark">Post</button>
+            <button type="submit" class="mt-2 btn btn-outline-light">Post</button>
         </form>
       </div>
 
     </article>
-    {% if post.comments %}
-    <div class="mt-2 comment mb-3 text-left">
-        <h4 style="text-align:left;">Comments: </h4>
-        {% for comment in post.comments | sort(attribute='created_at', reverse=True) %} 
-        <hr>
-            <div class="post-top w-100 d-inline-flex align-items-center">
-
-                <p class="mb-0">Posted by {{ comment.user_id | username_from_id }} on {{ comment.created_at | format_datetime }}</p>
-                {% if current_user.owns_comment(comment) %}
-                    <!-- remove button -->
-                    <a class="button" style="margin-left:auto;" >
-                        <i style="cursor:pointer" data-toggle="modal" data-target="#modal{{ comment.id }}" class="fa-solid fa-xmark"></i>
-                    </a>
-                {% endif %}    
-            </div>
-        <div class="text-left">
-                {{ comment.post_content | safe }}
-        </div>
-
-    <!-- comment Modal -->
-    <div class="modal fade" id="modal{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header text-black">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete comment</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-black">
-                    <p> Are you sure you want to delete this comment? </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                    <a href="/delcomment/{{ comment.id }}">
-                        <button type="button" class="btn btn-primary">Yes</button>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+    {% if mode=='reader' %} 
+        {% if post.comments %}
+            {{ comments(post) }}    
+        {% endif %}
+    {% endif %}
 
 
 <!-- Post Modal -->
@@ -129,3 +136,5 @@
     </div>
     </div>
 {% endmacro %}
+
+
