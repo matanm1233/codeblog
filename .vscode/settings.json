@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/b93f2955-ce69-44cd-9044-ed9e42a184b3/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/matanmorse",
+    "appService.deploySubpath": "."
+}
