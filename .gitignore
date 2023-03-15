@@ -2,6 +2,7 @@ __pycache__/
 deldb.py 
 createdb.py
 giveadmin.py
+changeadminpass.py
 instance/
 testing/
 flask_session

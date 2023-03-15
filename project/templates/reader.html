@@ -1,5 +1,7 @@
 {% extends 'layout.html' %} 
 {% from "macros.html" import article with context %}
+{% from "macros.html" import flash_box with context %}
+
 {% block head %} 
 <link rel="stylesheet" href="../static/styles.css">
 <script src="https://cdn.tiny.cloud/1/2kk2n5fh7418iw24v2hoick9me1kgrq365kchr2lvcu250s6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -22,5 +24,13 @@
 {% endblock %}
 
 {% block main %} 
+{% with messages = get_flashed_messages() %} 
+{% if messages %} 
+    <div class="alert alert-info">
+        {{ messages[0] }}
+    </div>
+    {% endif %} 
+{% endwith %}
+
     {{ article(post, mode='reader') }}
 {% endblock %}

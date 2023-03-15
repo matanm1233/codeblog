@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block main %}
-<div class="container">
+<div class="container text-center">
     <h3 class="mb-3">Sign Up</h3>
     <div class="container form-container">
         {% with messages = get_flashed_messages() %} 
@@ -17,7 +17,7 @@
                 {% endif %}
             {% endif %} 
         {% endwith %}
-        <form method="POST" action="/signup">
+        <form method="POST" action="/signup" class="text-left">
             <div class="form-group mb-3">
                     <label class="mb-2"for="inputemail">Email:</label>
                     <input class="form-control" type="email" name="email" autocomplete="off" placeholder="Email" autofocus="">
@@ -36,8 +36,9 @@
                     <input class="form-control" type="password" name="password" autocomplete="off" placeholder="Password">
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div>
         </form>
     </div>
 </div>

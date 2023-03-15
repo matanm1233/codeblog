@@ -1,9 +1,39 @@
 {% extends "layout.html" %}
+{% from "macros.html" import article with context %}
+{% from "macros.html" import render_comment with context %}
 
+{% block title %}Profile: {{ user.name }}{% endblock %}
 {% block main %}
+
 <div class="text-center splash-text">
   <h1>
-    Welcome, {{ name | capitalize }}!
+    Welcome, {{ user.name }}!
   </h1>  
+</div>
+<div class="container text-center text-white">
+{% with messages = get_flashed_messages() %} 
+{% if messages %} 
+    <div class="alert alert-info">
+        {{ messages[0] }}
+    </div>
+    {% endif %} 
+{% endwith %}
+
+  {% if user.posts %}
+  <h2 class="mb-2 standout">Your posts: </h2>
+  {% for post in user.posts %} 
+    {{ article(post) }}
+  {% endfor %}
+  {% endif %} 
+
+  {% if user.comments %} 
+  <h2 class="mb-2 standout">Your comments</h2>
+  {% for user_comment in user.comments %} 
+
+    <div class="d-inline-flex align-items-center"><p class="p-0 m-0">Posted on <h6 class="m-0 p-0 highlight-text-light">&nbsp{{ user_comment.post_id | title_from_id }}&nbsp</h6></p></div>  
+  {{ render_comment(user_comment) }}
+  {% endfor %} 
+  {% endif %}
+
 </div>
 {% endblock %}

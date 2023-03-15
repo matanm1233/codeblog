@@ -19,7 +19,7 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template("profile.html", name=current_user.name)
+    return render_template("profile.html", user=current_user)
 
 @main.route('/addpost', methods=['POST'])
 def addpost():
@@ -60,6 +60,10 @@ def read_post(post_title):
     post_title = post_title.replace('-', ' ')
 
     article = Post.query.filter_by(title=post_title).first()
+    if not article:
+        return redirect(url_for("main.index"))
+    
+    
     return render_template('reader.html', post=article)
 
 @main.route('/like/<post_title>')
@@ -114,7 +118,16 @@ def remove_post(post_title):
     if not current_user.owns_post(post):
         return redirect(url_for('main.index'))
     
+    # remove post
     db.session.delete(post)
+    db.session.commit()
+
+    # remove all associated comments
+    comments = post.comments
+
+    for comment in comments:
+        db.session.delete(comment)
+
     db.session.commit()
 
     flash('Post removed!')

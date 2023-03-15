@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 {% from "macros.html" import article with context %}
+{% from "macros.html" import flash_box with context %}
+
 {% block head %} 
 <script src="https://cdn.tiny.cloud/1/2kk2n5fh7418iw24v2hoick9me1kgrq365kchr2lvcu250s6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
@@ -47,7 +49,6 @@
       <div class="text-white">
         <h1 class="mb-3 splash-text">Developer Blog</h1>
         <h4 class="mb-3">matan.morse</h4>
-        <a class="btn btn-outline-light btn-lg" href="#">Visit my site</a>
         {% if current_user.is_admin() %} 
         <a class="btn btn-outline-light btn-lg" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" role="button">Add a post</a>
         </div>
@@ -63,9 +64,11 @@
     <form method="POST" action="/addpost">
         <label for="title" class="mb-1">Title:</label>
         <input style="width:60%" id="title" name="title" type="text" class="mx-auto form form-control mb-2">
-        <textarea class="mx-auto" name="postcontent" id="mytextarea">
+        <div class="textarea tiny_mce text-center justify-items-center w-50">
+          <textarea class="mx-auto" name="postcontent" id="mytextarea">
             <p>This is some sample content</p>
-        </textarea>
+          </textarea>
+        </div>
         <button class="my-3 btn btn-outline-light" type="submit">Post</button>
     </form>
 </div>
@@ -75,16 +78,9 @@
 
 
 {% block main %} 
-{% with messages = get_flashed_messages() %} 
-{% if messages %} 
-    <div class="alert alert-warning">
-        {{ messages[0] }}
-    </div>
-    {% endif %} 
-{% endwith %}
-
+{{ flash_box() }}
 <div class="container text-white">
-    <div class="mb-3 row h-100" style="background-color: white;">
+    <div class="row h-100" style="background-color: white;">
         <div class=" col-lg">
         </div>
     </div>

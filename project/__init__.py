@@ -80,7 +80,21 @@ def create_app():
     # filter for converting a userid into the corresponding username
     @app.template_filter()
     def username_from_id(id):
-        return User.query.filter_by(id=id).first().name
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return None
+        else:
+            return user.name
+
+
+    @app.template_filter()
+    def title_from_id(id):
+        post = Post.query.filter_by(id=id).first()
+        if not post:
+            return None
+        else:
+            return post.title
+    
 
     return app
 
