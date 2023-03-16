@@ -3,7 +3,6 @@ deldb.py
 createdb.py
 giveadmin.py
 changeadminpass.py
-instance/
 testing/
 flask_session
 posts
