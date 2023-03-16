@@ -7,3 +7,4 @@ instance/
 testing/
 flask_session
 posts
+.venv
