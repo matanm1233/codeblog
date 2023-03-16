@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'matanmorse'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_787C3F4822314770AD3027B1EE749976 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_32A2F7DA422E4E0FB82F9B95847AB114 }}
