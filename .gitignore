@@ -3,6 +3,7 @@ deldb.py
 createdb.py
 giveadmin.py
 changeadminpass.py
+setenviron.py
 testing/
 flask_session
 posts

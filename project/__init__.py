@@ -6,17 +6,16 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_session import Session
-import babel
 import calendar
+import os
 # this is the app factory
 
-
-# init SQLAlchemy so we can use it later in our models
+constring = os.environ['connectionstring']
+print(constring)
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    
     app.jinja_env.globals.update(hasuserliked=hasuserliked)
 
     # init session object
@@ -40,7 +39,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
 
     # initialize database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+    app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % constring
     db.init_app(app)
 
     # initialize flask-login
